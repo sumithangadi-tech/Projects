@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Skill Sphere – Nature Theme</title>
+<style>
+  /* Reset & base */
+  :root {
+    --sky-1: #bfe7ff; /* light sky */
+    --sky-2: #78c8ff; /* mid sky */
+    --sky-3: #5fa8ff; /* deeper sky */
+    --sun: #ffd76a;    /* sun */
+    --mountain-1: #7aa29a; /* near */
+    --mountain-2: #98b8b1; /* mid */
+    --mountain-3: #bfd3ce; /* far */
+    --grass-1: #7ecb67; /* grass */
+    --grass-2: #5bbf5a; /* darker grass */
+    --tree-trunk: #7b4f2c;
+    --tree-leaf-1: #2f8f4e;
+    --tree-leaf-2: #3fa55d;
+    --card-bg: rgba(255,255,255,0.85);
+    --card-border: rgba(0,0,0,0.08);
+    --text: #123;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); }
+
+  /* Nature scene background (pure CSS, no images) */
+  .scene {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(to bottom, var(--sky-1), var(--sky-2) 40%, var(--sky-3) 60%);
+  }
+
+  /* Sun */
+  .scene::before {
+    content: "";
+    position: absolute;
+    width: 18vmin; height: 18vmin; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff8d1 0 30%, var(--sun) 30% 60%, rgba(255,215,106,0.0) 60%);
+    top: 10vmin; left: 12vmin;
+    box-shadow: 0 0 120px 40px rgba(255,215,106,0.35);
+    filter: saturate(1.1);
+  }
+
+  /* Mountains - layered triangles using clip-path */
+  .mountains {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .peak { position: absolute; bottom: 20vh; width: 40vmax; height: 40vmax; }
+  .peak.one { left: -10vmax; background: var(--mountain-3); clip-path: polygon(50% 0%, 100% 100%, 0% 100%); filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12)); }
+  .peak.two { left: 10vmax; bottom: 18vh; background: var(--mountain-2); clip-path: polygon(50% 0%, 100% 100%, 0% 100%); filter: drop-shadow(0 8px 16px rgba(0,0,0,0.14)); }
+  .peak.three { left: 28vmax; bottom: 16vh; background: var(--mountain-1); clip-path: polygon(50% 0%, 100% 100%, 0% 100%); filter: drop-shadow(0 10px 18px rgba(0,0,0,0.16)); }
+
+  /* Grass foreground */
+  .grass {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 28vh;
+    background:
+      radial-gradient(60vmin 20vmin at 20% 0%, rgba(255,255,255,0.5), transparent 60%),
+      linear-gradient(to top, var(--grass-2) 0 30%, var(--grass-1) 30% 100%);
+  }
+
+  /* Trees - simple trunks + circular foliage */
+  .tree {
+    position: absolute; bottom: 18vh; width: 2.2vmin; height: 18vmin; background: var(--tree-trunk);
+    border-radius: 0.8vmin; transform-origin: bottom center;
+  }
+  .tree::before, .tree::after {
+    content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+    border-radius: 50%; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+  }
+  .tree::before { bottom: 10vmin; width: 12vmin; height: 12vmin; background: var(--tree-leaf-1);
+    clip-path: polygon(50% 0%, 100% 55%, 78% 100%, 22% 100%, 0% 55%); /* stylized canopy */
+  }
+  .tree::after { bottom: 17vmin; width: 8vmin; height: 8vmin; background: var(--tree-leaf-2); }
+
+  .tree.a { left: 8vmin; }
+  .tree.b { left: 22vmin; transform: scale(1.15); }
+  .tree.c { left: 68vmin; transform: scale(0.95); }
+  .tree.d { left: 80vmin; transform: scale(1.25); }
+
+  /* Floating clouds (gentle animation) */
+  .cloud { position: absolute; top: 14vmin; width: 18vmin; height: 6vmin; }
+  .cloud::before, .cloud::after { content: ""; position: absolute; background: #ffffffcc; border-radius: 50%; }
+  .cloud::before { width: 8vmin; height: 8vmin; left: 2vmin; top: -2vmin; }
+  .cloud::after { width: 10vmin; height: 10vmin; left: 8vmin; top: -3vmin; }
+  .cloud { background: #ffffffcc; border-radius: 3vmin; filter: drop-shadow(0 10px 12px rgba(0,0,0,0.08));
+           animation: drift 40s linear infinite; }
+  .cloud.one { left: -20vmin; animation-delay: 0s; }
+  .cloud.two { top: 22vmin; left: -30vmin; animation-delay: 10s; transform: scale(1.2); }
+  .cloud.three { top: 28vmin; left: -10vmin; animation-delay: 20s; transform: scale(0.9); }
+  @keyframes drift {
+    from { transform: translateX(0) scale(var(--scale, 1)); }
+    to   { transform: translateX(120vmin) scale(var(--scale, 1)); }
+  }
+
+  /* Content card */
+  .card {
+    position: relative; z-index: 1;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    box-shadow: 0 20px 48px rgba(0,0,0,0.18);
+    padding: 2rem 2.2rem; max-width: 860px; text-align: center;
+  }
+  h1 { margin: 0 0 0.5rem; font-size: 2rem; }
+  h2 { margin: 0.25rem 0 0.5rem; font-size: 1.4rem; color: #22523e; }
+  h3 { margin: 0.25rem 0 1rem; font-weight: 500; color: #2d6a4f; }
+  p { margin: 0.5rem 0 1rem; line-height: 1.6; }
+  .cta { display: inline-block; margin-top: 1rem; padding: 0.8rem 1.2rem; border-radius: 12px; background: #2d6a4f; color: #fff; text-decoration: none; box-shadow: 0 8px 16px rgba(45,106,79,0.35); }
+  .cta:hover { background: #245645; }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .cloud { animation: none; }
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 640px) {
+    .card { margin: 1rem; }
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+  <main class="scene" aria-label="Nature inspired background scene">
+    <div class="mountains">
+      <div class="peak one"></div>
+      <div class="peak two"></div>
+      <div class="peak three"></div>
+    </div>
+
+    <div class="cloud one"></div>
+    <div class="cloud two"></div>
+    <div class="cloud three"></div>
+
+    <div class="grass"></div>
+
+    <div class="tree a"></div>
+    <div class="tree b"></div>
+    <div class="tree c"></div>
+    <div class="tree d"></div>
+
+    <section class="card" role="region" aria-labelledby="title">
+      <h1 id="title">Skill Sphere</h1>
+      <h2>Smart Learning for Grades 1 to 5</h2>
+      <h3>Simple, fun and interactive learning for young students</h3>
+      <p><b>Explore lessons in Maths, Science, and English—built to spark curiosity and joy</b></p>
+      <a class="cta" href='grades.html'>Let's Learn</a>
+      <a class="cta logout" href="index.html">Logout</a>
+    </section>
+  </main>
+</body>
+</html>

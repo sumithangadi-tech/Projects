@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 1 - Quiz | Skill Sphere</title>
+    <style>
+        /* --- NATURE THEME VARIABLES --- */
+        :root {
+            --sky-1: #bfe7ff; /* light sky */
+            --sky-2: #78c8ff; /* mid sky */
+            --sky-3: #5fa8ff; /* deeper sky */
+            --sun: #ffd76a;    /* sun */
+            --mountain-1: #7aa29a; /* near */
+            --mountain-2: #98b8b1; /* mid */
+            --mountain-3: #bfd3ce; /* far */
+            --grass-1: #7ecb67; /* grass */
+            --grass-2: #5bbf5a; /* darker grass */
+            --tree-trunk: #7b4f2c;
+            --tree-leaf-1: #2f8f4e;
+            --tree-leaf-2: #3fa55d;
+        }
+
+       * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); }
+        
+
+        header {
+            background: #4b4bff; /* Changed to Blue to match theme */
+            color: white;
+            font-size: 28px;
+            padding: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        /* --- SCENE BACKGROUND --- */
+        .scene {
+            position: relative;
+            min-height: calc(100vh - 76px); /* Adjust for header height */
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(to bottom, var(--sky-1), var(--sky-2) 40%, var(--sky-3) 60%);
+        }
+
+        /* Sun */
+        .scene::before {
+            content: "";
+            position: absolute;
+            width: 18vmin; height: 18vmin; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff8d1 0 30%, var(--sun) 30% 60%, rgba(255,215,106,0.0) 60%);
+            top: 5vmin; left: 10vmin;
+            box-shadow: 0 0 120px 40px rgba(255,215,106,0.35);
+            filter: saturate(1.1);
+        }
+
+        /* Mountains */
+        .mountains { position: absolute; inset: 0; pointer-events: none; }
+        .peak { position: absolute; bottom: 20vh; width: 40vmax; height: 40vmax; }
+        .peak.one { left: -10vmax; background: var(--mountain-3); clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
+        .peak.two { left: 10vmax; bottom: 18vh; background: var(--mountain-2); clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
+        .peak.three { left: 28vmax; bottom: 16vh; background: var(--mountain-1); clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
+
+        /* Grass */
+        .grass {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 28vh;
+            background: radial-gradient(60vmin 20vmin at 20% 0%, rgba(255,255,255,0.5), transparent 60%),
+                        linear-gradient(to top, var(--grass-2) 0 30%, var(--grass-1) 30% 100%);
+        }
+
+        /* Trees */
+        .tree {
+            position: absolute; bottom: 18vh; width: 2.2vmin; height: 18vmin; background: var(--tree-trunk);
+            border-radius: 0.8vmin; transform-origin: bottom center;
+        }
+        .tree::before, .tree::after {
+            content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+            border-radius: 50%; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+        }
+        .tree::before { 
+            bottom: 10vmin; width: 12vmin; height: 12vmin; background: var(--tree-leaf-1);
+            clip-path: polygon(50% 0%, 100% 55%, 78% 100%, 22% 100%, 0% 55%);
+        }
+        .tree::after { bottom: 17vmin; width: 8vmin; height: 8vmin; background: var(--tree-leaf-2); }
+        .tree.a { left: 8vmin; }
+        .tree.b { left: 22vmin; transform: scale(1.15); }
+        .tree.c { left: 68vmin; transform: scale(0.95); }
+        .tree.d { left: 80vmin; transform: scale(1.25); }
+
+        /* Clouds */
+        .cloud { position: absolute; top: 14vmin; width: 18vmin; height: 6vmin; background: #ffffffcc; border-radius: 3vmin; animation: drift 40s linear infinite; }
+        .cloud::before, .cloud::after { content: ""; position: absolute; background: #ffffffcc; border-radius: 50%; }
+        .cloud::before { width: 8vmin; height: 8vmin; left: 2vmin; top: -2vmin; }
+        .cloud::after { width: 10vmin; height: 10vmin; left: 8vmin; top: -3vmin; }
+        .cloud.one { left: -20vmin; animation-delay: 0s; }
+        .cloud.two { top: 22vmin; left: -30vmin; animation-delay: 10s; transform: scale(1.2); }
+        .cloud.three { top: 28vmin; left: -10vmin; animation-delay: 20s; transform: scale(0.9); }
+        @keyframes drift { from { transform: translateX(0); } to { transform: translateX(120vmin); } }
+
+
+        /* --- CONTENT STYLES --- */
+        .container {
+            padding: 30px;
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2a4d8f; /* Adjusted to match blue theme */
+            margin-bottom: 15px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.9); /* Glass effect */
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        #question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .option {
+            display: block;
+            width: 100%; /* Ensure full width */
+            background: #ffcc80; /* Kept orange to stand out against blue sky */
+            margin: 10px 0;
+            padding: 15px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: #4e342e;
+        }
+
+        .option:hover {
+            background: #ffa726;
+            transform: scale(1.02);
+        }
+
+        .result {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #2e7d32;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+        }
+
+        #nextBtn {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            background: #4b4bff;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        #nextBtn:hover {
+            background: #2a2a8a;
+        }
+    </style>
+</head>
+<body>
+
+<header>Skill Sphere - Fun Quiz!</header>
+
+<main class="scene">
+    <div class="mountains">
+        <div class="peak one"></div>
+        <div class="peak two"></div>
+        <div class="peak three"></div>
+    </div>
+
+    <div class="cloud one"></div>
+    <div class="cloud two"></div>
+    <div class="cloud three"></div>
+
+    <div class="grass"></div>
+
+    <div class="tree a"></div>
+    <div class="tree b"></div>
+    <div class="tree c"></div>
+    <div class="tree d"></div>
+
+    <div class="container">
+        <h1>Class 1 Quiz</h1>
+        <div class="quiz-card" id="quiz">
+            <p id="question"></p>
+            <div id="options"></div>
+        </div>
+        <div class="result" id="result"></div>
+        <button id="nextBtn">Next Question</button>
+    </div>
+</main>
+
+<script>
+const quizQuestions = [
+    { question: "Math: What is 5 + 3?", options: ["6", "8", "9", "7"], answer: "8" },
+    { question: "Science: Which one is a fruit?", options: ["Carrot", "Apple", "Potato", "Onion"], answer: "Apple" },
+    { question: "EVS: What do we need to breathe?", options: ["Water", "Air", "Soil", "Sunlight"], answer: "Air" },
+    { question: "English: Choose the correct spelling:", options: ["Bananna", "Banana", "Bannana", "Bannna"], answer: "Banana" },
+    { question: "Math: What number comes after 9?", options: ["10", "11", "8", "12"], answer: "10" },
+    { question: "Science: What do plants need to grow?", options: ["Water", "Chocolate", "Oil", "Salt"], answer: "Water" },
+    { question: "EVS: Which one is an animal?", options: ["Tree", "Dog", "Car", "Rock"], answer: "Dog" },
+    { question: "English: What is the opposite of 'Big'?", options: ["Small", "Tall", "Fast", "Long"], answer: "Small" }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const resultEl = document.getElementById("result");
+const nextBtn = document.getElementById("nextBtn");
+
+function loadQuestion() {
+    if(currentQuestion >= quizQuestions.length){
+        questionEl.textContent = "Quiz Completed!";
+        optionsEl.innerHTML = "";
+        resultEl.textContent = `Your score: ${score} / ${quizQuestions.length}`;
+        nextBtn.style.display = "none";
+        return;
+    }
+    const q = quizQuestions[currentQuestion];
+    questionEl.textContent = q.question;
+    optionsEl.innerHTML = "";
+    q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.classList.add("option");
+        btn.onclick = () => selectOption(option);
+        optionsEl.appendChild(btn);
+    });
+}
+
+function selectOption(selected) {
+    if(selected === quizQuestions[currentQuestion].answer){
+        score++;
+    }
+    currentQuestion++;
+    loadQuestion();
+}
+
+nextBtn.onclick = () => {
+    // If user clicks Next without selecting, we just skip
+    currentQuestion++;
+    loadQuestion();
+};
+
+loadQuestion();
+</script>
+
+</body>
+</html>
